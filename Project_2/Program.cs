@@ -10,7 +10,7 @@ namespace Project_2
     {
         static void Main()
         {
-            
+            Console.WriteLine("figuring this out");
         }
     }
 }
