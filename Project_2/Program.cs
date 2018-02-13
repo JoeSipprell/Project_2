@@ -11,6 +11,7 @@ namespace Project_2
         static void Main()
         {
             Console.WriteLine("figuring this out,boiiiii");
+            Console.WriteLine("I think i figured it out");
         }
     }
 }
