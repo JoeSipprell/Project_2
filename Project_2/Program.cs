@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,19 +11,32 @@ namespace Project_2
     {
         static void Main()
         {
-            SuperBowl testing = new SuperBowl("15 - Jan - 67", "I", 61946, "Bart Starr", "Vince Lombardi", "Green Bay Packers", 35, "Len Dawson", "Hank Stram", "Kansas City Chiefs", 10, "Bart Starr", "Memorial Coliseum", "Los Angeles", "California");
+            List<SuperBowl> SBList = new List<SuperBowl>();
 
-            Console.WriteLine(testing.Date);
+            ReadFromCSV(ref SBList);
+        } // end main method
 
-            Console.ReadLine();
+        static void ReadFromCSV(ref List<SuperBowl> sbList)
+        {
+            const string FILE_PATH = @"C:\Users\sipkenj\Documents\Visual Studio 2017\Projects\Project_2\Super_Bowl_Project.csv";
+            FileStream dataFile = new FileStream(FILE_PATH, FileMode.Open, FileAccess.Read);
+            StreamReader sr = new StreamReader(dataFile);
+            string[] currentLine = sr.ReadLine().Split(',');
 
-            testing.Date = "BOIIII";
+            while (sr.EndOfStream == false)
+            {
+                currentLine = sr.ReadLine().Split(',');
 
-            Console.WriteLine(testing.Date);
+                sbList.Add(new SuperBowl(currentLine[0], currentLine[1], Convert.ToInt32(currentLine[2]), currentLine[3], currentLine[4], currentLine[5], Convert.ToInt32(currentLine[6]), currentLine[7], currentLine[8], currentLine[9], 
+                                         Convert.ToInt32(currentLine[10]), currentLine[11], currentLine[12], currentLine[13], currentLine[14] ));
+            } // end reading from csv file
 
-            Console.ReadLine();
-        }
-    }
+            sr.Close();
+            dataFile.Close();
+        } // end ReadFromCSV method
+
+    } // end program
+
     class SuperBowl
     {
         private string date, number, wQB, wCoach, wTeam, lQB, lCoach, lTeam, MVP, stadium, city, state;
