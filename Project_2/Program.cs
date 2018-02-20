@@ -15,11 +15,7 @@ namespace Project_2
 
             ReadFromCSV(ref SBList);
 
-            foreach (SuperBowl sb in SBList)
-            {
-                Console.WriteLine(sb.City);
-            }
-            Console.ReadLine();
+            listAllWinners(SBList);
         } // end main method
 
         static void getFilePath(out string filePath)
@@ -62,6 +58,29 @@ namespace Project_2
             sr.Close();
             dataFile.Close();
         } // end ReadFromCSV method
+
+        static void listAllWinners(List<SuperBowl> sbList)
+        {
+            FileStream outFile = new FileStream("outputFile.txt", FileMode.Create, FileAccess.Write);
+            StreamWriter sw = new StreamWriter(outFile);
+
+
+            sw.WriteLine("SuperBowl Winners:\n");
+
+            foreach(SuperBowl sb in sbList)
+            {
+                sw.WriteLine($"Winning Team Name: {sb.WTeam}");
+                sw.WriteLine($"Year: {sb.Date}");
+                sw.WriteLine($"Winning Quarterback: {sb.WQB}");
+                sw.WriteLine($"Winning Coach: {sb.WCoach}");
+                sw.WriteLine($"MVP: {sb.MVP1}");
+                sw.WriteLine($"Point Difference: {sb.WPoints - sb.LPoints}");
+                sw.WriteLine();
+            }
+
+            sw.Close();
+            outFile.Close();
+        }
 
 
     } // end program
