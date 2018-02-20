@@ -16,6 +16,9 @@ namespace Project_2
             ReadFromCSV(ref SBList);
 
             listAllWinners(SBList);
+
+            top5Attended(SBList);
+
         } // end main method
 
         static void getFilePath(out string filePath)
@@ -65,7 +68,7 @@ namespace Project_2
             StreamWriter sw = new StreamWriter(outFile);
 
 
-            sw.WriteLine("SuperBowl Winners:\n");
+            sw.WriteLine("SuperBowl Winners\n\n");
 
             foreach(SuperBowl sb in sbList)
             {
@@ -76,6 +79,36 @@ namespace Project_2
                 sw.WriteLine($"MVP: {sb.MVP1}");
                 sw.WriteLine($"Point Difference: {sb.WPoints - sb.LPoints}");
                 sw.WriteLine();
+            }
+
+            sw.Close();
+            outFile.Close();
+        }
+
+        static void top5Attended(List<SuperBowl> sbList)
+        {
+            FileStream outFile = new FileStream("outputFile.txt", FileMode.Append, FileAccess.Write);
+            StreamWriter sw = new StreamWriter(outFile);
+
+            sw.WriteLine("Top 5 Most Attended Superbowls\n\n");
+            var mostAttended =
+                from sb in sbList
+                orderby sb.Attendance descending
+                select sb;
+
+            int x = 0;
+            foreach (SuperBowl sb in mostAttended)
+            {
+                x += 1;
+
+                sw.WriteLine($" {x}. {sb.Date}");
+                sw.WriteLine($"  Winning Team: {sb.WTeam}");
+                sw.WriteLine($"  Losing Team: {sb.LTeam}");
+                sw.WriteLine($"  Location: {sb.City}, {sb.State}");
+                sw.WriteLine($"  Stadium: {sb.Stadium}");
+                sw.WriteLine();
+
+                if (x == 5) { break; }
             }
 
             sw.Close();
