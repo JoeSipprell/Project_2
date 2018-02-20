@@ -64,21 +64,15 @@ namespace Project_2
 
         static void listAllWinners(List<SuperBowl> sbList)
         {
-            FileStream outFile = new FileStream("outputFile.txt", FileMode.Create, FileAccess.Write);
+            FileStream outFile = new FileStream("outputFile.csv", FileMode.Create, FileAccess.Write);
             StreamWriter sw = new StreamWriter(outFile);
 
-
-            sw.WriteLine("SuperBowl Winners\n\n");
+            sw.WriteLine("Superbowl Winners");
+            sw.WriteLine("Winning Team,Year,Winning Quarterback,Winning Coach,MVP,Point Difference");
 
             foreach(SuperBowl sb in sbList)
             {
-                sw.WriteLine($"Winning Team Name: {sb.WTeam}");
-                sw.WriteLine($"Year: {sb.Date}");
-                sw.WriteLine($"Winning Quarterback: {sb.WQB}");
-                sw.WriteLine($"Winning Coach: {sb.WCoach}");
-                sw.WriteLine($"MVP: {sb.MVP1}");
-                sw.WriteLine($"Point Difference: {sb.WPoints - sb.LPoints}");
-                sw.WriteLine();
+                sw.WriteLine($"{sb.WTeam},{sb.Date},{sb.WQB},{sb.WCoach},{sb.MVP1},{sb.WPoints - sb.LPoints}");
             }
 
             sw.Close();
@@ -87,10 +81,11 @@ namespace Project_2
 
         static void top5Attended(List<SuperBowl> sbList)
         {
-            FileStream outFile = new FileStream("outputFile.txt", FileMode.Append, FileAccess.Write);
+            FileStream outFile = new FileStream("outputFile.csv", FileMode.Append, FileAccess.Write);
             StreamWriter sw = new StreamWriter(outFile);
 
-            sw.WriteLine("Top 5 Most Attended Superbowls\n\n");
+            sw.WriteLine("\nTop 5 Most Attended Superbowls");
+            sw.WriteLine("Rank,Year,Winning Team,Losing Team,City,State,Stadium");
             var mostAttended =
                 from sb in sbList
                 orderby sb.Attendance descending
@@ -101,12 +96,7 @@ namespace Project_2
             {
                 x += 1;
 
-                sw.WriteLine($" {x}. {sb.Date}");
-                sw.WriteLine($"  Winning Team: {sb.WTeam}");
-                sw.WriteLine($"  Losing Team: {sb.LTeam}");
-                sw.WriteLine($"  Location: {sb.City}, {sb.State}");
-                sw.WriteLine($"  Stadium: {sb.Stadium}");
-                sw.WriteLine();
+                sw.WriteLine($"{x},{sb.Date},{sb.WTeam},{sb.LTeam},{sb.City},{sb.State},{sb.Stadium}");
 
                 if (x == 5) { break; }
             }
