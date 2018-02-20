@@ -14,14 +14,42 @@ namespace Project_2
             List<SuperBowl> SBList = new List<SuperBowl>();
 
             ReadFromCSV(ref SBList);
+
+            foreach (SuperBowl sb in SBList)
+            {
+                Console.WriteLine(sb.City);
+            }
+            Console.ReadLine();
         } // end main method
 
+        static void getFilePath(out string filePath)
+        {
+            string lineInput;
+
+            Console.WriteLine("Please enter the path to the file 'Super_Bowl_Project.csv' you wish to read data from: ");
+            lineInput = Path.GetFullPath(Console.ReadLine());
+
+            if (File.Exists(lineInput) == false)
+            {
+                Console.WriteLine("Sorry, your input was not a valid file path");
+                filePath = "";
+                Console.ReadLine();
+                Environment.Exit(0);
+            }
+            else
+            {
+                filePath = lineInput;
+            }
+            
+        }
         static void ReadFromCSV(ref List<SuperBowl> sbList)
         {
-            const string FILE_PATH = @"C:\Users\sipkenj\Documents\Visual Studio 2017\Projects\Project_2\Super_Bowl_Project.csv";
+            string FILE_PATH;
+            getFilePath(out FILE_PATH);
             FileStream dataFile = new FileStream(FILE_PATH, FileMode.Open, FileAccess.Read);
             StreamReader sr = new StreamReader(dataFile);
             string[] currentLine = sr.ReadLine().Split(',');
+            
 
             while (sr.EndOfStream == false)
             {
@@ -34,6 +62,7 @@ namespace Project_2
             sr.Close();
             dataFile.Close();
         } // end ReadFromCSV method
+
 
     } // end program
 
