@@ -23,6 +23,8 @@ namespace Project_2
 
             top5Attended(SBList, OUTPUT_FILE_PATH);
 
+            top5States(SBList, OUTPUT_FILE_PATH);
+
         } // end main method
 
         static void getFilePath(out string filePath)
@@ -102,6 +104,29 @@ namespace Project_2
                 sw.WriteLine($"{x},{sb.Date},{sb.WTeam},{sb.LTeam},{sb.City},{sb.State},{sb.Stadium}");
 
                 if (x == 5) { break; }
+            }
+
+            sw.Close();
+            outFile.Close();
+        }
+
+        static void top5States(List<SuperBowl> sbList, string OUTPUT_FILE_PATH)
+        {
+            FileStream outFile = new FileStream(OUTPUT_FILE_PATH, FileMode.Append, FileAccess.Write);
+            StreamWriter sw = new StreamWriter(outFile);
+
+            sw.WriteLine("\nList of States hosting the most superbowls");
+            sw.WriteLine("Number hosted,City,State,Stadium");
+
+            var byState =
+                from sb in sbList
+                group sb by sb.State into sbGroup
+                orderby sbGroup.Count() descending
+                select sbGroup;
+
+            foreach(IGrouping<string, SuperBowl> sbG in byState)
+            {
+                sw.WriteLine($"{sbG.Count()},{sbG.First().City},{sbG.Key},{sbG.First().Stadium}");
             }
 
             sw.Close();
