@@ -11,13 +11,17 @@ namespace Project_2
     {
         static void Main()
         {
+            string OUTPUT_FILE_PATH;
+
             List<SuperBowl> SBList = new List<SuperBowl>();
+
+            getFilePath(out OUTPUT_FILE_PATH);
 
             ReadFromCSV(ref SBList);
 
-            listAllWinners(SBList);
+            listAllWinners(SBList, OUTPUT_FILE_PATH);
 
-            top5Attended(SBList);
+            top5Attended(SBList, OUTPUT_FILE_PATH);
 
         } // end main method
 
@@ -25,10 +29,10 @@ namespace Project_2
         {
             string lineInput;
 
-            Console.WriteLine("Please enter the path to the file 'Super_Bowl_Project.csv' you wish to read data from: ");
+            Console.WriteLine("Please enter the location for the output file: ");
             lineInput = Path.GetFullPath(Console.ReadLine());
 
-            if (File.Exists(lineInput) == false)
+            if (Directory.Exists(lineInput) == false)
             {
                 Console.WriteLine("Sorry, your input was not a valid file path");
                 filePath = "";
@@ -37,14 +41,13 @@ namespace Project_2
             }
             else
             {
-                filePath = lineInput;
+                filePath = lineInput + @"\SB_Output_File.csv";
             }
             
         }
         static void ReadFromCSV(ref List<SuperBowl> sbList)
         {
-            string FILE_PATH;
-            getFilePath(out FILE_PATH);
+            string FILE_PATH = @"Super_Bowl_Project.csv";
             FileStream dataFile = new FileStream(FILE_PATH, FileMode.Open, FileAccess.Read);
             StreamReader sr = new StreamReader(dataFile);
             string[] currentLine = sr.ReadLine().Split(',');
@@ -62,9 +65,9 @@ namespace Project_2
             dataFile.Close();
         } // end ReadFromCSV method
 
-        static void listAllWinners(List<SuperBowl> sbList)
+        static void listAllWinners(List<SuperBowl> sbList, string OUTPUT_FILE_PATH)
         {
-            FileStream outFile = new FileStream("outputFile.csv", FileMode.Create, FileAccess.Write);
+            FileStream outFile = new FileStream(OUTPUT_FILE_PATH, FileMode.Create, FileAccess.Write);
             StreamWriter sw = new StreamWriter(outFile);
 
             sw.WriteLine("Superbowl Winners");
@@ -79,9 +82,9 @@ namespace Project_2
             outFile.Close();
         }
 
-        static void top5Attended(List<SuperBowl> sbList)
+        static void top5Attended(List<SuperBowl> sbList, string OUTPUT_FILE_PATH)
         {
-            FileStream outFile = new FileStream("outputFile.csv", FileMode.Append, FileAccess.Write);
+            FileStream outFile = new FileStream(OUTPUT_FILE_PATH, FileMode.Append, FileAccess.Write);
             StreamWriter sw = new StreamWriter(outFile);
 
             sw.WriteLine("\nTop 5 Most Attended Superbowls");
