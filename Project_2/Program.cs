@@ -25,6 +25,8 @@ namespace Project_2
 
             top5States(SBList, OUTPUT_FILE_PATH);
 
+            mostMVP(SBList, OUTPUT_FILE_PATH);
+
         } // end main method
 
         static void getFilePath(out string filePath)
@@ -115,7 +117,7 @@ namespace Project_2
             FileStream outFile = new FileStream(OUTPUT_FILE_PATH, FileMode.Append, FileAccess.Write);
             StreamWriter sw = new StreamWriter(outFile);
 
-            sw.WriteLine("\nList of States hosting the most superbowls");
+            sw.WriteLine("\n\nList of States hosting the most superbowls");
             sw.WriteLine("Number hosted,City,State,Stadium");
 
             var byState =
@@ -133,6 +135,38 @@ namespace Project_2
             outFile.Close();
         }
 
+        static void mostMVP(List<SuperBowl> sbList, string OUTPUT_FILE_PATH)
+        {
+            FileStream outFile = new FileStream(OUTPUT_FILE_PATH, FileMode.Append, FileAccess.Write);
+            StreamWriter sw = new StreamWriter(outFile);
+
+            sw.WriteLine("\n\nList of Players who were MVP more than twice");
+            sw.WriteLine("Times won,Name,Winning Team,Losing Team");
+
+            var mvps =
+                from sb in sbList
+                group sb by sb.MVP1 into MVPlayer
+                orderby MVPlayer.Count() descending
+                where MVPlayer.Count() > 2
+                select MVPlayer;
+
+            foreach(IGrouping<string, SuperBowl> mvp in mvps)
+            {
+                sw.Write($"{mvp.Count()},{mvp.First().MVP1}");
+                foreach(SuperBowl sb in mvp)
+                {
+                    string xRow = "";
+                    if(sb.Date != mvp.First().Date) { xRow += ","; }
+
+                    xRow += $",{sb.WTeam},{sb.LTeam}";
+
+                    sw.WriteLine(xRow);
+                }
+            }
+
+            sw.Close();
+            outFile.Close();
+        }
 
     } // end program
 
