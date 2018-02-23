@@ -27,6 +27,8 @@ namespace Project_2
 
             mostMVP(SBList, OUTPUT_FILE_PATH);
 
+            mostWonLost(SBList, OUTPUT_FILE_PATH);
+
         } // end main method
 
         static void getFilePath(out string filePath)
@@ -166,7 +168,83 @@ namespace Project_2
 
             sw.Close();
             outFile.Close();
-        }
+        } // end mostMVP
+
+        static void mostWonLost(List<SuperBowl> sbList, string OUTPUT_FILE_PATH)
+        {
+            FileStream outFile = new FileStream(OUTPUT_FILE_PATH, FileMode.Append, FileAccess.Write);
+            StreamWriter sw = new StreamWriter(outFile);
+
+            sw.WriteLine("\n\n,Won the most SuperBowls,Lost the most SuperBowls");
+
+            List<string> maxVal(List<string> list)
+            {
+                var mostOften =
+                    from sb in list
+                    group sb by sb into top
+                    orderby top.Count() descending
+                    select top;
+
+                List<string> max = new List<string>();
+                foreach(IGrouping<string,string> boi in mostOften)
+                {
+                    if(boi.Count() == mostOften.First().Count())
+                    {
+                        max.Add(boi.Key);
+                    }
+                }
+
+
+                return max;
+            }
+
+            List<string> wCoaches = new List<string>();
+            List<string> lCoaches = new List<string>();
+            List<string> wTeams = new List<string>();
+            List<string> lTeams = new List<string>();
+
+            foreach (SuperBowl sb in sbList)
+            {
+                wCoaches.Add(sb.WCoach);
+                lCoaches.Add(sb.LCoach);
+                wTeams.Add(sb.WTeam);
+                lTeams.Add(sb.LTeam);
+            }
+
+            List<string> mWonC = maxVal(wCoaches);
+            List<string> mLostC = maxVal(lCoaches);
+            List<string> mWonT = maxVal(wTeams);
+            List<string> mLostT = maxVal(lTeams);
+
+            string xRow = "Coaches,";
+
+            for(int x = 0; x < Math.Max(mWonC.Count,mLostC.Count); x++)
+            {
+                if(x < mWonC.Count) { xRow += $"{mWonC[x]}"; }
+                
+                if(x < mLostC.Count) { xRow += $",{mLostC[x]}"; }
+
+                sw.WriteLine(xRow);
+
+                xRow = ",";
+            }
+
+            xRow = "Teams,";
+
+            for (int x = 0; x < Math.Max(mWonT.Count, mLostT.Count); x++)
+            {
+                if (x < mWonT.Count) { xRow += $"{mWonT[x]}"; }
+
+                if (x < mLostT.Count) { xRow += $",{mLostT[x]}"; }
+
+                sw.WriteLine(xRow);
+
+                xRow = ",";
+            }
+
+            sw.Close();
+            outFile.Close();
+        } // end mostWonLost
 
     } // end program
 
