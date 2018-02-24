@@ -11,27 +11,44 @@ namespace Project_2
     {
         static void Main()
         {
+            // startup
             string OUTPUT_FILE_PATH;
 
             List<SuperBowl> SBList = new List<SuperBowl>();
 
+            // input of location of output file
             getFilePath(out OUTPUT_FILE_PATH);
 
+            //read data from input file
             ReadFromCSV(ref SBList);
 
+            // main
             listAllWinners(SBList, OUTPUT_FILE_PATH);
 
             top5Attended(SBList, OUTPUT_FILE_PATH);
 
-            top5States(SBList, OUTPUT_FILE_PATH);
+            topStates(SBList, OUTPUT_FILE_PATH);
 
             mostMVP(SBList, OUTPUT_FILE_PATH);
 
             mostWonLost(SBList, OUTPUT_FILE_PATH);
 
+            pointDifference(SBList, OUTPUT_FILE_PATH);
+
+            averageAttendance(SBList, OUTPUT_FILE_PATH);
+
+            // cleanup
+            Console.Clear();
+
+            Console.WriteLine($"Output complete.\nThe output file is named 'SB_Output_File.csv' and is located at \n{OUTPUT_FILE_PATH}");
+
+            Console.Write("\nPress enter to close the program...");
+
+            Console.ReadLine();
+
         } // end main method
 
-        static void getFilePath(out string filePath)
+        static void getFilePath(out string filePath) // gets location for output file from user
         {
             string lineInput;
 
@@ -50,7 +67,7 @@ namespace Project_2
                 filePath = lineInput + @"\SB_Output_File.csv";
             }
             
-        }
+        } // end getFilePath
         static void ReadFromCSV(ref List<SuperBowl> sbList)
         {
             string FILE_PATH = @"Super_Bowl_Project.csv";
@@ -81,7 +98,7 @@ namespace Project_2
 
             foreach(SuperBowl sb in sbList)
             {
-                sw.WriteLine($"{sb.WTeam},{sb.Date},{sb.WQB},{sb.WCoach},{sb.MVP1},{sb.WPoints - sb.LPoints}");
+                sw.WriteLine($"{sb.WTeam},{sb.Year},{sb.WQB},{sb.WCoach},{sb.MVP1},{sb.WPoints - sb.LPoints}");
             }
 
             sw.Close();
@@ -105,7 +122,7 @@ namespace Project_2
             {
                 x += 1;
 
-                sw.WriteLine($"{x},{sb.Date},{sb.WTeam},{sb.LTeam},{sb.City},{sb.State},{sb.Stadium}");
+                sw.WriteLine($"{x},{sb.Year},{sb.WTeam},{sb.LTeam},{sb.City},{sb.State},{sb.Stadium}");
 
                 if (x == 5) { break; }
             }
@@ -114,12 +131,12 @@ namespace Project_2
             outFile.Close();
         }
 
-        static void top5States(List<SuperBowl> sbList, string OUTPUT_FILE_PATH)
+        static void topStates(List<SuperBowl> sbList, string OUTPUT_FILE_PATH) // outputs state that's hosted the most superbowls
         {
             FileStream outFile = new FileStream(OUTPUT_FILE_PATH, FileMode.Append, FileAccess.Write);
             StreamWriter sw = new StreamWriter(outFile);
 
-            sw.WriteLine("\n\nList of States hosting the most superbowls");
+            sw.WriteLine("\n\nState(s) that have hosted the most superbowls");
             sw.WriteLine("Number hosted,City,State,Stadium");
 
             var byState =
@@ -130,12 +147,15 @@ namespace Project_2
 
             foreach(IGrouping<string, SuperBowl> sbG in byState)
             {
-                sw.WriteLine($"{sbG.Count()},{sbG.First().City},{sbG.Key},{sbG.First().Stadium}");
+                if (sbG.Count() == byState.First().Count()) // if multiple states tie, lists them all
+                {
+                    sw.WriteLine($"{sbG.Count()},{sbG.First().City},{sbG.Key},{sbG.First().Stadium}");
+                }
             }
 
             sw.Close();
             outFile.Close();
-        }
+        } // end topStates
 
         static void mostMVP(List<SuperBowl> sbList, string OUTPUT_FILE_PATH)
         {
@@ -246,11 +266,58 @@ namespace Project_2
             outFile.Close();
         } // end mostWonLost
 
+        static void pointDifference(List<SuperBowl> sbList, string OUTPUT_FILE_PATH)
+        {
+            FileStream outFile = new FileStream(OUTPUT_FILE_PATH, FileMode.Append, FileAccess.Write);
+            StreamWriter sw = new StreamWriter(outFile);
+
+            int maxDiff = 0;
+            foreach(SuperBowl sb in sbList)
+            {
+                if (sb.WPoints - sb.LPoints > maxDiff)
+                {
+                    maxDiff = sb.WPoints - sb.LPoints;
+                }
+            }
+
+            sw.WriteLine("\n\nSuperbowl with the biggest point difference,Point Difference");
+
+            foreach(SuperBowl sb in sbList)
+            {
+                if(sb.WPoints - sb.LPoints == maxDiff)
+                {
+                    sw.WriteLine($"{sb.Number},{maxDiff}");
+                }
+            }
+
+            sw.Close();
+            outFile.Close();
+        }
+
+        static void averageAttendance(List<SuperBowl> sbList, string OUTPUT_FILE_PATH)
+        {
+            FileStream outFile = new FileStream(OUTPUT_FILE_PATH, FileMode.Append, FileAccess.Write);
+            StreamWriter sw = new StreamWriter(outFile);
+
+
+            List<int> attendances = new List<int>();
+
+            foreach (SuperBowl sb in sbList)
+            {
+                attendances.Add(sb.Attendance);
+            }
+
+            sw.WriteLine($"\n\nAverage Attendance of all Superbowls: {Convert.ToInt32(attendances.Average())}");
+
+            sw.Close();
+            outFile.Close();
+        }
+
     } // end program
 
     class SuperBowl
     {
-        private string date, number, wQB, wCoach, wTeam, lQB, lCoach, lTeam, MVP, stadium, city, state;
+        private string date, number, wQB, wCoach, wTeam, lQB, lCoach, lTeam, MVP, stadium, city, state, year;
         private int attendance, wPoints, lPoints;
 
 
@@ -271,6 +338,7 @@ namespace Project_2
             this.Stadium = stadium;
             this.City = city;
             this.State = state;
+            year = "'" + Date.Substring(Date.Length - 2);
         } //end constructor
 
         public string Date { get => date; set => date = value; }
@@ -288,5 +356,7 @@ namespace Project_2
         public int Attendance { get => attendance; set => attendance = value; }
         public int WPoints { get => wPoints; set => wPoints = value; }
         public int LPoints { get => lPoints; set => lPoints = value; }
+
+        public string Year { get => year; set => year = value; }
     } // end class SuperBowl
 }
