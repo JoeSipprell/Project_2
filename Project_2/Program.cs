@@ -68,7 +68,8 @@ namespace Project_2
             }
             
         } // end getFilePath
-        static void ReadFromCSV(ref List<SuperBowl> sbList)
+
+        static void ReadFromCSV(ref List<SuperBowl> sbList) // reads data from a csv file
         {
             string FILE_PATH = @"Super_Bowl_Project.csv";
             FileStream dataFile = new FileStream(FILE_PATH, FileMode.Open, FileAccess.Read);
@@ -88,7 +89,7 @@ namespace Project_2
             dataFile.Close();
         } // end ReadFromCSV method
 
-        static void listAllWinners(List<SuperBowl> sbList, string OUTPUT_FILE_PATH)
+        static void listAllWinners(List<SuperBowl> sbList, string OUTPUT_FILE_PATH) //lists all superbowl winners
         {
             FileStream outFile = new FileStream(OUTPUT_FILE_PATH, FileMode.Create, FileAccess.Write);
             StreamWriter sw = new StreamWriter(outFile);
@@ -103,15 +104,16 @@ namespace Project_2
 
             sw.Close();
             outFile.Close();
-        }
+        } // end listAllWinners
 
-        static void top5Attended(List<SuperBowl> sbList, string OUTPUT_FILE_PATH)
+        static void top5Attended(List<SuperBowl> sbList, string OUTPUT_FILE_PATH) // lists top 5 most attended superbowls
         {
             FileStream outFile = new FileStream(OUTPUT_FILE_PATH, FileMode.Append, FileAccess.Write);
             StreamWriter sw = new StreamWriter(outFile);
 
             sw.WriteLine("\nTop 5 Most Attended Superbowls");
             sw.WriteLine("Rank,Year,Winning Team,Losing Team,City,State,Stadium");
+
             var mostAttended =
                 from sb in sbList
                 orderby sb.Attendance descending
@@ -129,7 +131,7 @@ namespace Project_2
 
             sw.Close();
             outFile.Close();
-        }
+        } // end top5Attended
 
         static void topStates(List<SuperBowl> sbList, string OUTPUT_FILE_PATH) // outputs state that's hosted the most superbowls
         {
@@ -157,7 +159,7 @@ namespace Project_2
             outFile.Close();
         } // end topStates
 
-        static void mostMVP(List<SuperBowl> sbList, string OUTPUT_FILE_PATH)
+        static void mostMVP(List<SuperBowl> sbList, string OUTPUT_FILE_PATH) // lists players who have been mvp more than twice
         {
             FileStream outFile = new FileStream(OUTPUT_FILE_PATH, FileMode.Append, FileAccess.Write);
             StreamWriter sw = new StreamWriter(outFile);
@@ -190,14 +192,14 @@ namespace Project_2
             outFile.Close();
         } // end mostMVP
 
-        static void mostWonLost(List<SuperBowl> sbList, string OUTPUT_FILE_PATH)
+        static void mostWonLost(List<SuperBowl> sbList, string OUTPUT_FILE_PATH) // lists the coaches and teams that have won and lost the most superbowls
         {
             FileStream outFile = new FileStream(OUTPUT_FILE_PATH, FileMode.Append, FileAccess.Write);
             StreamWriter sw = new StreamWriter(outFile);
 
             sw.WriteLine("\n\n,Won the most SuperBowls,Lost the most SuperBowls");
 
-            List<string> maxVal(List<string> list)
+            List<string> maxVal(List<string> list) // returns the strings that are repeated the most in a list
             {
                 var mostOften =
                     from sb in list
@@ -206,6 +208,7 @@ namespace Project_2
                     select top;
 
                 List<string> max = new List<string>();
+
                 foreach(IGrouping<string,string> boi in mostOften)
                 {
                     if(boi.Count() == mostOften.First().Count())
@@ -213,8 +216,7 @@ namespace Project_2
                         max.Add(boi.Key);
                     }
                 }
-
-
+                
                 return max;
             }
 
@@ -266,7 +268,7 @@ namespace Project_2
             outFile.Close();
         } // end mostWonLost
 
-        static void pointDifference(List<SuperBowl> sbList, string OUTPUT_FILE_PATH)
+        static void pointDifference(List<SuperBowl> sbList, string OUTPUT_FILE_PATH) // outputs the superbowl with the highest point difference
         {
             FileStream outFile = new FileStream(OUTPUT_FILE_PATH, FileMode.Append, FileAccess.Write);
             StreamWriter sw = new StreamWriter(outFile);
@@ -292,9 +294,9 @@ namespace Project_2
 
             sw.Close();
             outFile.Close();
-        }
+        } // end pointDifference
 
-        static void averageAttendance(List<SuperBowl> sbList, string OUTPUT_FILE_PATH)
+        static void averageAttendance(List<SuperBowl> sbList, string OUTPUT_FILE_PATH) // outputs the average attendance of all superbowls
         {
             FileStream outFile = new FileStream(OUTPUT_FILE_PATH, FileMode.Append, FileAccess.Write);
             StreamWriter sw = new StreamWriter(outFile);
@@ -311,8 +313,7 @@ namespace Project_2
 
             sw.Close();
             outFile.Close();
-        }
-
+        } // end averageAttendance
     } // end program
 
     class SuperBowl
